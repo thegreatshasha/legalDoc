@@ -1,0 +1,66 @@
+<html>
+
+<head>
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="css/normalize.css">
+    <link rel="stylesheet" type="text/css" href="css/style.css">
+    <script type="text/javascript" src="js/jquery.min.js"></script>
+    <script type="text/javascript" src="js/angular.min.js"></script>
+</head>
+
+<body ng-app>
+    <div class="container">
+        <div id="leftPanel">
+			<div class="box">
+        		<div class="boxTitle">
+        		Section Generator
+        		</div>
+	        	<div class="boxContents">
+	        		<form>
+	        			<input type="text" placeholder="Section Name">
+	        			<hr>
+	        			<input type="checkbox">Variable Name
+	        			<hr>
+	        			<button>Add Section</button>
+	        		</form>
+	        	</div>
+        	</div>
+        </div>
+        <div id="contentPanel">
+			<div class="stampDiv">
+				<img class="stampImage" src="images/stamp.jpg">
+			</div>
+			<div class="paper">
+				<pre>{{paper.text}}</pre>	
+			</div>
+			<div class="typingDiv">
+				<textarea class="typingArea" ng-model="paper.text"></textarea>
+			</div>
+        </div>
+        <div id="rightPanel">
+        	<div class="box">
+        		<div class="boxTitle">
+        		Variable Generator
+        		</div>
+	        	<div class="boxContents">
+	        		Variable Generated
+	        		<hr>
+	        		<form>
+	        			<input type="text" placeholder="VariableName">
+	        			<hr>
+	        			<select>
+	        				<option>Variable Type</option>
+	        				<option>String</option>
+	        				<option>Number</option>
+	        				<option>Currency</option>
+	        			</select>
+	        			<hr>
+	        			<button>Generate Variable</button>
+	        		</form>
+	        	</div>
+        	</div>
+        </div>
+    </div>
+</body>
+
+</html>

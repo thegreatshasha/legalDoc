@@ -1,0 +1,61 @@
+.container{
+	width: 100%;
+	height: 1000px;
+}
+
+#leftPanel{
+	width: 20%;
+	height: 1000px;
+	background-color:#DBDDE2;
+	float: left;
+}
+#contentPanel{
+	width: 60%;
+	height: 1000px;
+
+	float: left;
+}
+
+#rightPanel{
+	width: 20%;
+	height: 1000px;
+	background-color:#DBDDE2;
+	float: left;
+}
+.stampDiv{
+	width: 100%;
+	height:300px;
+	
+	padding: 5px 35px;
+}
+.stampImage{
+	width: 90%;
+	height:280px;
+}
+.paper{
+	padding: 22px 45px;
+}
+.typingDiv{
+	padding: 22px 45px;
+}
+.typingArea{
+	
+	border:1px solid black;
+	height: 100px;
+	width: 100%;
+}
+.box{
+	width: 90%;
+	height: 800px;
+	border: 1px solid #ffffff;
+	margin-left: 10px;
+	margin-top: 15px;
+}
+.boxTitle{
+	height: 30px;
+	font-size:20px;
+	background-color: #44619D;
+	padding: 5px 20px;
+	font-weight: bold;
+	color: #ffffff; 
+}
