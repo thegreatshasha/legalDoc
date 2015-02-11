@@ -6,6 +6,7 @@
     <link rel="stylesheet" type="text/css" href="css/style.css">
     <script type="text/javascript" src="js/jquery.min.js"></script>
     <script type="text/javascript" src="js/angular.min.js"></script>
+    
 </head>
 
 <body ng-app>
@@ -31,10 +32,11 @@
 				<img class="stampImage" src="images/stamp.jpg">
 			</div>
 			<div class="paper">
-				<pre>{{paper.text}}</pre>	
+				<pre id="workSpace">{{paper.text}}</pre>	
 			</div>
 			<div class="typingDiv">
 				<textarea class="typingArea" ng-model="paper.text"></textarea>
+				<button id="sync">Sync</button>
 			</div>
         </div>
         <div id="rightPanel">
@@ -46,7 +48,7 @@
 	        		Variable Generated
 	        		<hr>
 	        		<form>
-	        			<input type="text" placeholder="VariableName">
+	        			<input type="text" placeholder="VariableName" id="variableName">
 	        			<hr>
 	        			<select>
 	        				<option>Variable Type</option>
@@ -55,12 +57,13 @@
 	        				<option>Currency</option>
 	        			</select>
 	        			<hr>
-	        			<button>Generate Variable</button>
+	        			<button id="createVariable">Generate Variable</button>
 	        		</form>
 	        	</div>
         	</div>
         </div>
     </div>
+    <script type="text/javascript" src="js/script.js"></script>
 </body>
 
 </html>
