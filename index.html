@@ -6,64 +6,70 @@
     <link rel="stylesheet" type="text/css" href="css/style.css">
     <script type="text/javascript" src="js/jquery.min.js"></script>
     <script type="text/javascript" src="js/angular.min.js"></script>
-    
+    <script type="text/javascript" src="js/jquery-ui/jquery-ui.js"></script>
+
 </head>
 
 <body ng-app>
     <div class="container">
         <div id="leftPanel">
-			<div class="box">
-        		<div class="boxTitle">
-        		Section Generator
-        		</div>
-	        	<div class="boxContents">
-	        		<form>
-	        			<input type="text" placeholder="Section Name">
-	        			<hr>
-	        			<input type="checkbox">Variable Name
-	        			<hr>
-	        			<button>Add Section</button>
-	        		</form>
-	        	</div>
-        	</div>
+            <div class="box">
+                <div class="boxTitle">
+                    Section Generator
+                </div>
+                <div class="boxContents">
+                    <form>
+                        <input type="text" placeholder="Section Name">
+                        <hr>
+                        <input type="checkbox">Variable Name
+                        <hr>
+                        <button>Add Section</button>
+                    </form>
+                </div>
+            </div>
         </div>
         <div id="contentPanel">
-			<div class="stampDiv">
-				<img class="stampImage" src="images/stamp.jpg">
-			</div>
-			<div class="paper">
-				<pre id="workSpace">{{paper.text}}</pre>	
-			</div>
-			<div class="typingDiv">
-				<textarea class="typingArea" ng-model="paper.text"></textarea>
-				<button id="sync">Sync</button>
-			</div>
+            <div class="stampDiv">
+                <img class="stampImage" src="images/stamp.jpg">
+            </div>
+
+            <form id="form1" runat="server">
+                <div id="content">
+
+                    <div class="dropitems">
+                        <textarea id="TextArea1" name="S1" rows="20">Your content goes here...</textarea>
+                    </div>
+                </div>
+            </form>
         </div>
         <div id="rightPanel">
-        	<div class="box">
-        		<div class="boxTitle">
-        		Variable Generator
-        		</div>
-	        	<div class="boxContents">
-	        		Variable Generated
-	        		<hr>
-	        		<form>
-	        			<input type="text" placeholder="VariableName" id="variableName">
-	        			<hr>
-	        			<select>
-	        				<option>Variable Type</option>
-	        				<option>String</option>
-	        				<option>Number</option>
-	        				<option>Currency</option>
-	        			</select>
-	        			<hr>
-	        			<button id="createVariable">Generate Variable</button>
-	        		</form>
-	        	</div>
-        	</div>
+            <div class="box">
+                <div class="boxTitle">
+                    Variable Generator
+                </div>
+                <div class="boxContents">
+                    Variable Generated
+                    <hr>
+
+                    <form>
+                        <input type="text" placeholder="VariableName" id="variableName">
+
+                        <button id="createVariable">Generate Variable</button>
+                    </form>
+                    <div class="generatedVariables dragitems">
+                        <hr>
+
+                        <hr>
+
+                        <h3>
+			                <span>Variable area</span></h3>
+                        <div id="allfields" runat="server">
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
-    </div>
-    <script type="text/javascript" src="js/script.js"></script>
+        <script type="text/javascript" src="js/script.js"></script>
 </body>
 
 </html>
