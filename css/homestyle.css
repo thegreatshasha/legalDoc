@@ -1,6 +1,12 @@
+* { 
+  -webkit-box-sizing: border-box; /* Safari/Chrome, other WebKit */
+  -moz-box-sizing: border-box;    /* Firefox, other Gecko */
+  box-sizing: border-box;         /* Opera/IE 8+ */
+}
 .topNav{
 	height: 60px;
 	background-color: #F5F5F5;
+	margin-bottom: -10px;
 }
 .right{
 	float: right;
@@ -14,12 +20,13 @@ ul li{
 	height: 300px;
 }
 .steps{
-	height: 300px;
-	padding:10px 10%;
+	height: 460px;
+	padding:25px 10%;
 }
 .try{
 	height: 80px;
 	background-color: #F50;
+	margin-top: 25px;
 
 }
 .footer{
@@ -32,13 +39,25 @@ ul li{
 	margin-left: 0px;
 }
 .row-heading{
-	width: 50%;
+	width: 43%;
 	margin: 10px auto;
 }
 .col-3{
 	float: left;
-	width: 25%;
-	background-color: #F5F5F5;
-	padding: 20px;
+width: 30%;
+background-color: #F5F5F5;
+padding: 20px;
+margin: 0px 1%;
 
+}
+
+
+.stepImage{
+	display: block;
+	margin: 2px auto;
+}
+
+.footerlinks{
+	width: 330px;
+	margin: 50px auto;
 }
