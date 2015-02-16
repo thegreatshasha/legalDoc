@@ -21,7 +21,8 @@
                     <form>
                         <input type="text" placeholder="Section Name">
                         <hr>
-                        <input type="checkbox">Variable Name
+                        <input type="radio" name="sectionType" value="singular">Singular<br>
+                        <input type="radio" name="sectionType" value="multiple">Multiple<br>
                         <hr>
                         <button>Add Section</button>
                     </form>
@@ -36,6 +37,12 @@
             <form id="form1" runat="server">
                 <div id="content">
 
+                    <div class="dropitems sectionLayout">
+                        <textarea id="TextArea1" name="S1" rows="20">Your content goes here...</textarea>
+                    </div>
+                    <div class="dropitems">
+                        <textarea id="TextArea1" name="S1" rows="20">Your content goes here...</textarea>
+                    </div>
                     <div class="dropitems">
                         <textarea id="TextArea1" name="S1" rows="20">Your content goes here...</textarea>
                     </div>

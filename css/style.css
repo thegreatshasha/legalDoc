@@ -3,6 +3,9 @@
 	height: 1000px;
 }
 
+.right{
+	float: right;
+}
 #leftPanel{
 	width: 20%;
 	height: 1000px;
@@ -20,7 +23,9 @@
 	width: 20%;
 	height: 1000px;
 	background-color:#162E34;
-	float: left;
+	float: left;.right{
+		float: right
+	}
 }
 .stampDiv{
 	width: 100%;
@@ -72,3 +77,5 @@
 .dragitems ul{list-style-type: none;padding-left: 5px;
                display: block;}
 #content{height: 400px;width: 650px;}
+
+

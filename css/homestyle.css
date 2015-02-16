@@ -1,0 +1,44 @@
+.topNav{
+	height: 60px;
+	background-color: #F5F5F5;
+}
+.right{
+	float: right;
+	margin-right: 101px;
+margin-top: 25px;
+}
+ul li{
+	display: inline-block;
+}
+.carousl{
+	height: 300px;
+}
+.steps{
+	height: 300px;
+	padding:10px 10%;
+}
+.try{
+	height: 80px;
+	background-color: #F50;
+
+}
+.footer{
+	height: 100px;
+	background-color: #F5F5F5;
+}
+.row{
+	width: 100%;
+	clear: both;
+	margin-left: 0px;
+}
+.row-heading{
+	width: 50%;
+	margin: 10px auto;
+}
+.col-3{
+	float: left;
+	width: 25%;
+	background-color: #F5F5F5;
+	padding: 20px;
+
+}
