@@ -1,0 +1,21 @@
+
+.rowProducts{
+	width: 70%;
+	height: 30%;
+	margin: 10px auto;
+	padding-left: 4%;
+}
+
+.products {
+width: 30%;
+height: 70px;
+background-color: yellow;
+float: left;
+margin-right: 20px;
+margin-bottom: 2px;
+margin-top: 11px;
+font-weight: bold;
+}
+.carousl{
+	background-color: #EF8800;
+}
