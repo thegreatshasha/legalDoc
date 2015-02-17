@@ -22,9 +22,12 @@ font-weight: bold;
 padding:28px 10px;;
 }
 .carousl{
-	background-color: #EF8800;
+	background-color:  #ECBF0F;
 }
 
 .icons{
 	height: 30px;
+}
+.icons2{
+	height: 25px;
 }

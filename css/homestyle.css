@@ -59,6 +59,7 @@ ul li{
 	display: inline-block;
 	float: right;
 	margin-right: 50px;
+	margin-top: 14px;
 }
 
 .footer{
@@ -104,7 +105,19 @@ border-radius: 5px;
 	width: 100%;
 	text-align: center;
 }
-
+.navLinks{
+	text-decoration: none;
+	color: #000000;
+}
+.navLinks:hover{
+	text-decoration: none;
+}
+#ndtv{
+	width: 120px;
+}
+#forbes{
+	height: 70px;
+}
 .pulse{
 	display: inline-block;
 	width: 120px;
@@ -112,10 +125,11 @@ border-radius: 5px;
 	font-size: 18px;
 	text-decoration: none;
 	background-color: #ECBF0F;
-	color: #ffffff;
+	color: #000000;
 	border-radius: 3px;
 	padding-bottom: 2px;
-	padding-left: 25px;
+	padding-left: 22px;
+	padding-top: 10px;
 }
 
 .pulse2{
@@ -145,4 +159,13 @@ padding-top: 14px;
 margin: 2px auto;
 font-weight: bold;
 padding-left: 31px;
+}
+
+.tryContent{
+	font-size: 18px;
+	display:block;
+	height: 30px;
+	padding-top: 10px;
+	float: left;
+	margin-right: 40px;
 }
