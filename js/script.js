@@ -4,7 +4,6 @@ var list=[];
 var b;
 $('#createVariable').click(function(){
 	varName=$('#variableName').val()
-	alert (varName);
 	variables.push(varName);
 	console.log(variables);
     $('#allfields').append("<li>"+varName+"</li>");
@@ -16,6 +15,19 @@ $('#createVariable').click(function(){
                 revert: "invalid"
             });
             initDroppable($("#TextArea1"));
+
+            function generateForm(variables){
+                var html = "";
+
+                for(var i in variables) {
+                    variable = variables[i];
+                    html += '<label>'+variable+':</label>'
+                    html += '<input type="text" ng-model="' + variable + '">';
+                }
+                $interpolate = angular.injector(['ng', 'main.app']).get("InterpolateService")(html);
+                return $interpolate(html);
+            }
+
             function initDroppable($elements) {
                 $elements.droppable({
                     hoverClass: "textarea",
@@ -32,7 +44,12 @@ $('#createVariable').click(function(){
                         var val = droparea.value;
                         var str1 = val.substring(0, range1);
                         var str3 = val.substring(range1, val.length);
-                        droparea.value = str1 + dropText + str3;
+                        var result = str1 + dropText + str3;
+                        droparea.value = result;
+
+                        $("#generatedForm").html(generateForm(variables));
+                        $interpolate = angular.injector(['ng', 'main.app']).get("InterpolateService")(html);
+                        $("#generatedHTML").html($interpolate(result));
                     }
                 });
             }
@@ -40,22 +57,4 @@ $('#createVariable').click(function(){
     console.log('hi');
 })
 
-
-$('.typingArea').keyup(function(){
-	contents=$('#workSpace').text();
-	
-})
-
-$('#sync').click(function(){
-	console.log(contents);
-	for (var i = 0; i < variables.length; i++) {
-		console.log(variables[i]);
-		item=contents.match(variables[i]);
-		b=contents.replace(variables[i],"<input type='text' name='varia'>")
-		console.log(item);
-	};
-	console.log(b);
-	$('#workSpace').html(b);
-
-})
 

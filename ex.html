@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <link rel="stylesheet" type="text/css" href="css/bootstrap/css/bootstrap.css">
+    <script type="text/javascript" src="js/jquery.min.js"></script>
+    <script type="text/javascript" src="js/angular.min.js"></script>
+</head>
+
+<body ng-app="myapp">
+<div class="container" style="margin-left: 125px;">
+	<div ng-controller="MainController">
+	    <h2>Template</h2>
+
+	    <textarea ng-model="html1" style="width: 1000px; height: 200px;"></textarea>
+	    <h2>Form</h2>
+	    <div id="formGen" compile-html="html2"></div>
+	    
+	    <h2>Result</h2>
+	    <div id="formHTML">{{html3}}</div>
+	</div>
+
+</div>
+
+
+
+
+
+<script>
+angular.module("myapp", [])
+    .controller("MainController", function($scope, $interpolate, $sce, $interval) {
+        $scope.helloTo = {};
+        $scope.helloTo.title = "World, AngularJS";
+        $scope.html1 = "";
+        $scope.html2 = "";
+        $scope.html3 = "";
+        window.scope = $scope;
+
+        $scope.parseVariables = function(html) {
+        	var re = /\{\{(\w+)\}\}/g;
+        	var res = html.match(re);
+        	for(var i in res)
+        		res[i] = res[i].replace(/[\{\}]/g,'')
+        	return res;
+        }
+
+        $scope.generateForm = function(variables) {
+        	var html = "";
+        	
+        	for(var i in variables){
+        		html += '<label>' + variables[i] + ':</label>'
+                html += '<input type="text" ng-model="' + variables[i] + '">';
+        	}
+        	//console.log(html);
+        	return html;
+        }
+
+        $scope.generateText = function() {
+        	$scope.html3 = $sce.trustAsHtml($interpolate($scope.html1)($scope));	
+        }
+
+        $scope.$watch('html1', function() {
+        	//console.log($scope.variables)
+        	var variables = $scope.parseVariables($scope.html1);
+        	$scope.html2 = $sce.trustAsHtml($scope.generateForm(variables));
+        	//debugger;
+        	console.log($interpolate($scope.html1)($scope));
+        	$scope.generateText();
+        });
+
+        $interval(function(){
+        	$scope.generateText();
+        }, 50)
+    } )
+	.directive('compileHtml',['$sce', '$parse', '$compile', function($sce, $parse, $compile){
+	  return {
+	    link: function(scope,element,attr){
+	      var parsed = $parse(attr.compileHtml);
+	      function getStringValue() { return (parsed(scope) || '').toString(); }            
+	      scope.$watch(getStringValue, function (value) {
+	        var el = $compile($sce.getTrustedHtml(parsed(scope)) || '')(scope);
+	        element.empty();
+	        element.append(el);        
+	      });       
+	    } 
+	  };
+	}]);
+</script>
+
+</body>
+</html>
