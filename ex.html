@@ -5,11 +5,23 @@
     <link rel="stylesheet" type="text/css" href="css/bootstrap/css/bootstrap.css">
     <link rel="stylesheet" href="bower_components/shepherd/css/shepherd-theme-default.css">
     <link rel="stylesheet" href="bower_components/shepherd/css/shepherd-theme-arrows.css">
+    <link rel="stylesheet" href="bower_components/quill/dist/quill.snow.css">
     
-
     <script type="text/javascript" src="js/jquery.min.js"></script>
     <script type="text/javascript" src="bower_components/shepherd/shepherd.js"></script>
     <script type="text/javascript" src="js/angular.min.js"></script>
+    <script type="text/javascript" src="bower_components/quill/dist/quill.min.js"></script>
+    <script type="text/javascript" src="bower_components/ngquill/src/ng-quill.min.js"></script>
+
+    <style>
+    #formHTML .guiderInput{
+    	display: none;
+    }
+
+    .shepherd-text span.variableDisp{
+    	display: none;
+    }
+    </style>
 
     <script>
 	tour = new Shepherd.Tour({
@@ -24,56 +36,17 @@
 <body ng-app="myapp">
 <div class="container" style="margin-left: 125px;">
 	<div ng-controller="MainController">
-	    <h2>Template</h2>
+	    <h2>Template Button</h2>
 
-	    <textarea id="textare" ng-model="html1" style="width: 1000px; height: 200px;"></textarea>
+	    <button onclick="tour.start()">Tour</button>
+
+	    <ng-quill-editor ng-model="html1" toolbar="true" link-tooltip="true" image-tooltip="true" toolbar-entries="font size bold list bullet italic underline strike align color background link image" editor-required="true" required="" error-class="input-error"></ng-quill-editor>
+
 	    <h2>Form</h2>
 	    <div id="formGen" compile-html="html2"></div>
 	    
 	    <h2>Result</h2>
-	    <div id="formHTML">{{html3}}</div>
-
-	    <h1>Baby are you giveall. I barely even know you.</h1>
-
-	    <h1>Baby are you giveall. I barely even know you.</h1>
-
-	    <h1>Baby are you giveall. I barely even know you.</h1>
-
-	    <h1>Baby are you giveall. I barely even know you.</h1>
-
-	    <h1>Baby are you giveall. I barely even know you.</h1>
-
-	    <h1>Baby are you giveall. I barely even know you.</h1>
-
-	    <h1>Baby are you giveall. I barely even know you.</h1>
-
-	    <h1>Baby are you giveall. I barely even know you.</h1>
-
-	    <h1>Baby are you giveall. I barely even know you.</h1>
-
-	    <h1>Baby are you giveall. I barely even know you.</h1>
-
-	    <h1>Baby are you giveall. I barely even know you.</h1>
-
-	    <h1>Baby are you giveall. I barely even know you.</h1>
-
-	    <h1>Baby are you giveall. I barely even know you.</h1>
-
-	    <h1>Baby are you giveall. I barely even know you.</h1>
-	    <guider description="Ready for the purplelight!">
-	    	Hello yeah bitch!
-	    	<variable name="name"></variable>
-	    	<variable name="phone"></variable>
-	    	<variable name="email"></variable>
-	    	<!-- <div id="hell">Hell itself is singing</div> -->
-	    </guider>
-
-	    <guider description="Questions we might never need to answer!">
-	    	This is whatever you think it is
-	    </guider>
-
-	    <variable name='kuroko'>
-	    </variable>
+	    <div id="formHTML" compile-html="html3"></div>
 	</div>
 
 </div>
@@ -83,14 +56,20 @@
 
 
 <script>
-angular.module("myapp", [])
-    .controller("MainController", function($scope, $interpolate, $sce, $interval) {
+angular.module("myapp", ['ngQuill'])
+	.service('dataService', function(){
+		this.users = [];
+		this.name = "s";
+		window.dataService = this;
+	})
+    .controller("MainController", function($scope, $interpolate, $sce, $interval, dataService) {
         $scope.helloTo = {};
         $scope.helloTo.title = "World, AngularJS";
         $scope.html1 = "";
         $scope.html2 = "";
         $scope.html3 = "";
         window.scope = $scope;
+        $scope.dataService = dataService;
 
         $scope.parseVariables = function(html) {
         	var re = /\{\{(\w+)\}\}/g;
@@ -112,15 +91,20 @@ angular.module("myapp", [])
         }
 
         $scope.generateText = function() {
-        	$scope.html3 = $sce.trustAsHtml($interpolate($scope.html1)($scope));	
+        	var decodedText = $scope.decodeHtml($scope.html1);
+        	console.log(decodedText);
+        	$scope.html3 = $sce.trustAsHtml($interpolate(decodedText)($scope));	
         }
+
+        $scope.decodeHtml = function (html) {
+		    var txt = document.createElement("textarea");
+		    txt.innerHTML = html;
+		    return txt.value;
+		}
 
         $scope.$watch('html1', function() {
         	//console.log($scope.variables)
         	var variables = $scope.parseVariables($scope.html1);
-        	$scope.html2 = $sce.trustAsHtml($scope.generateForm(variables));
-        	//debugger;
-        	console.log($interpolate($scope.html1)($scope));
         	$scope.generateText();
         });
 
@@ -141,22 +125,23 @@ angular.module("myapp", [])
 	    } 
 	  };
 	}])
-	.directive('guider',['$sce', '$parse', '$compile', function($sce, $parse, $compile){
+	.directive('guider',['$sce', '$parse', '$compile', '$timeout', function($sce, $parse, $compile, $timeout){
 	  return {
 	  	restrict: 'E',
+	  	scope: true,
 	    link: function(scope, element, attr) {
-	      //debugger;
+	      debugger;
 	      var $el = $("<form></form>");
 	      // Strip non form tags and compile
-	      $el.append(element.html());
-	      //debugger;
+	      $el.append(element.find(".guiderInput"));
 	      $compile($el.contents())(scope);
 	      //console.log(html);
-	      tour.addStep('myStep', {
+	      $timeout(function(){
+	      	tour.addStep('myStep', {
 			  title: attr.description,
 			  scrollTo: true,
 			  text: $el[0],
-			  attachTo: "#formGen",
+			  attachTo: {element: element[0], on: 'right'},
 			  classes: 'shepherd shepherd-open shepherd-theme-arrows shepherd-transparent-text',
 			  buttons: [
 			  	{
@@ -175,16 +160,28 @@ angular.module("myapp", [])
 			    }
 			  ]
 			});
+	      }, 0)
+	      
 	    } 
 	  };
 	}])
-	.directive('variable',['$compile', function($compile){
+	.directive('variable',['$compile', 'dataService', function($compile, dataService){
 	  return {
 	  	restrict: 'E',
 	  	replace: true,
+	  	scope: true,
+	  	template: function(element, attr){
+	  		//debugger;
+	  		debugger;
+	  		//console.log(!element.parent().parent().length)
+	  		//if(!element.parent().parent().length)
+	  		//	return element[0].outerHTML;
+	  		//else
+	  			return '<span><span class="guiderInput"><label for="' + attr.name +'">' + attr.question + '</label><input type="text" name="' + attr.name +'" ng-model="dataService.' + attr.name +'"/></span>' + '<span class="variableDisp" ng-bind="dataService.' + attr.name +'"></span></span>';
+	  	},
 	  	link: function(scope, element, attr){
-	      console.log('i am alive!')
-	      element.html('<input type="text" name="name">')
+	      console.log('i am alive!', dataService)
+	      //$compile(element)(scope)
 	      //alert('i am alive')
 	      //	debugger;     
 	    } 
