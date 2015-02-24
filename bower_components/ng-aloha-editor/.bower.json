@@ -1,0 +1,22 @@
+{
+  "name": "ng-aloha-editor",
+  "version": "0.0.2",
+  "main": "ng-aloha-editor.js",
+  "devDependencies": {
+    "requirejs": "~2.1.9",
+    "angular": "~1.2.6",
+    "angular-mocks": "~1.2.6",
+    "jquery": "~2.0.3"
+  },
+  "homepage": "https://github.com/terwey/ng-aloha-editor",
+  "_release": "0.0.2",
+  "_resolution": {
+    "type": "version",
+    "tag": "v0.0.2",
+    "commit": "8d3698291fcd98b57769407c3a2a6387453636b6"
+  },
+  "_source": "git://github.com/terwey/ng-aloha-editor.git",
+  "_target": "~0.0.2",
+  "_originalSource": "ng-aloha-editor",
+  "_direct": true
+}
