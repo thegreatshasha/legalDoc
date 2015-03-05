@@ -19,6 +19,8 @@
 	<script src='bower_components/textAngular/dist/textAngular.min.js'></script>
 	<script src="bower_components/js-beautify/js/lib/beautify.js"></script>
     <script src="bower_components/js-beautify/js/lib/beautify-html.js"></script>
+    <script src="bower_components/jspdf/dist/jspdf.debug.js"></script>
+    <script src="bower_components/html2canvas/build/html2canvas.min.js"></script>
 
 
     <style>
@@ -60,15 +62,14 @@
 	<div ng-controller="MainController">
 	    <h2>Template Button</h2>
 
-	    <text-angular ng-model="html1"></text-angular>
+	    <h3>Step 1: Generate template in gui</h3>
+	    <text-angular ng-model="dataService.html"></text-angular>
 
-	    <!--ng-quill-editor ng-model="html1" toolbar="true" link-tooltip="true" image-tooltip="true" toolbar-entries="font size bold list bullet italic underline strike align color background link image" editor-required="true" required="" error-class="input-error"></ng-quill-editor-->
-
-	    <h3>Edit HTML</h3>
-	    <textarea assign-data="html1" ng-trim="false" style="white-space: pre-wrap;word-wrap: break-word"></textarea>
+	    <h3>Step 2: Add Guider and Variable Tags</h3>
+	    <textarea assign-data="dataService.html" ng-trim="false" style="white-space: pre-wrap;word-wrap: break-word"></textarea>
 
 	    <h2>Live Preview</h2><button onclick="tour.start()">Tour</button>
-	    <div id="formHTML" compile-html="html1"></div>
+	    <div id="formHTML" compile-html="dataService.html"></div>
 
 	    <div id="testDiv"></div>
 	</div>
@@ -82,48 +83,11 @@
 <script>
 angular.module("myapp", ['ngQuill', 'textAngular'])
 	.service('dataService', function(){
-		this.users = [];
-		this.name = "s";
+		html = "";
 		window.dataService = this;
 	})
     .controller("MainController", function($scope, $interpolate, $sce, $interval, dataService) {
-        $scope.helloTo = {};
-        $scope.helloTo.title = "World, AngularJS";
-        $scope.html1 = "";
-        $scope.html2 = "";
-        $scope.html3 = "";
-        window.scope = $scope;
         $scope.dataService = dataService;
-
-        $scope.parseVariables = function(html) {
-        	var re = /\{\{(\w+)\}\}/g;
-        	var res = html.match(re);
-        	for(var i in res)
-        		res[i] = res[i].replace(/[\{\}]/g,'')
-        	return res;
-        }
-
-        $scope.generateForm = function(variables) {
-        	var html = "";
-        	
-        	for(var i in variables){
-        		html += '<label>' + variables[i] + ':</label>'
-                html += '<input type="text" ng-model="' + variables[i] + '">';
-        	}
-        	//console.log(html);
-        	return html;
-        }
-
-        $scope.decodeHtml = function (html) {
-		    var txt = document.createElement("textarea");
-		    txt.innerHTML = html;
-		    return txt.value;
-		}
-
-        $scope.$watch('html1', function() {
-        	//console.log($scope.variables)
-        	var variables = $scope.parseVariables($scope.html1);
-        });
     } )
 	.directive('compileHtml',['$sce', '$parse', '$compile', function($sce, $parse, $compile){
 	  return {
@@ -131,15 +95,11 @@ angular.module("myapp", ['ngQuill', 'textAngular'])
 	      var parsed = $parse(attr.compileHtml);
 	      function getStringValue() { return (parsed(scope) || '').toString(); }            
 	      scope.$watch(getStringValue, function (value) {
-	      	console.log(value);
+	      	//console.log(value);
 	      	var $el = $("<div></div>");
-	      	// Strip non form tags and compile
 	      	$el.html(value);
 	      	$compile($el.contents())(scope);
-	        element.html($el);
-	        //var el = $compile($sce.getTrustedHtml(parsed(scope)) || '')(scope);
-	        //element.empty();
-	        //element.append(el);        
+	        element.html($el);       
 	      });       
 	    } 
 	  };
@@ -149,7 +109,7 @@ angular.module("myapp", ['ngQuill', 'textAngular'])
 	  	restrict: 'E',
 	  	scope: true,
 	    link: function(scope, element, attr) {
-	      debugger;
+	      //debugger;
 	      var $el = $("<form></form>");
 	      // Strip non form tags and compile
 	      $el.append(element.find(".guiderInput"));
@@ -190,19 +150,11 @@ angular.module("myapp", ['ngQuill', 'textAngular'])
 	  	replace: true,
 	  	scope: true,
 	  	template: function(element, attr){
-	  		//debugger;
-	  		debugger;
-	  		//console.log(!element.parent().parent().length)
-	  		//if(!element.parent().parent().length)
-	  		//	return element[0].outerHTML;
-	  		//else
-	  			return '<span><span class="guiderInput"><label for="' + attr.name +'">' + attr.question + '</label><input type="text" name="' + attr.name +'" ng-model="dataService.' + attr.name +'"/></span>' + '<span class="variableDisp" ng-bind="dataService.' + attr.name +'"></span></span>';
+	  		return '<span><span class="guiderInput"><label for="' + attr.name +'">' + attr.question + '</label><input type="text" name="' + attr.name +'" ng-model="dataService.' + attr.name +'"/></span>' + '<span class="variableDisp" ng-bind="dataService.' + attr.name +'"></span></span>';
 	  	},
 	  	link: function(scope, element, attr){
-	      console.log('i am alive!', dataService)
-	      //$compile(element)(scope)
-	      //alert('i am alive')
-	      //	debugger;     
+	      //console.log('i am alive!', dataService);
+	      //debugger; 
 	    } 
 	  };
 	}])
@@ -215,11 +167,14 @@ angular.module("myapp", ['ngQuill', 'textAngular'])
 	      element.bind('change', function(){
 	      	tour.steps = [];
 
-	      	var pretty = html_beautify(value);
-	        element.val(pretty);  
+	      	element.val(html_beautify(element.val()));  
 
 	      	scope.$apply(function(){
-	      		scope[attr.assignData] = element.val();
+	      		//scope[attr.assignData] = element.val();
+
+	      		var model = $parse(attr.assignData);
+	      		model.assign(scope, element.val());
+	      		debugger;
 	      	});
 	      })
 
@@ -235,9 +190,6 @@ angular.module("myapp", ['ngQuill', 'textAngular'])
 
 <script>
 	$(function(){
-		// tour.on('show', function(a,b,c){
-		// 	debugger;
-		// })
 		tour.start();
 	});
 </script
