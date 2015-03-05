@@ -1,83 +1,246 @@
-<html>
+<!DOCTYPE html>
+<html lang="en">
 
 <head>
-    <title></title>
-    <link rel="stylesheet" type="text/css" href="css/normalize.css">
-    <link rel="stylesheet" type="text/css" href="css/style.css">
     <link rel="stylesheet" type="text/css" href="css/bootstrap/css/bootstrap.css">
+    <link rel="stylesheet" href="bower_components/shepherd/css/shepherd-theme-default.css">
+    <link rel="stylesheet" href="bower_components/shepherd/css/shepherd-theme-arrows.css">
+    <link rel="stylesheet" href="bower_components/quill/dist/quill.snow.css">
+    <link rel='stylesheet' href='/bower_components/textAngular/src/textAngular.css'>
+	
+    
     <script type="text/javascript" src="js/jquery.min.js"></script>
-    <script type="text/javascript" src="js/angular.min.js"></script>
-    <script type="text/javascript" src="js/jquery-ui/jquery-ui.js"></script>
+    <script type="text/javascript" src="bower_components/shepherd/shepherd.js"></script>
+    <script type="text/javascript" src="bower_components/angular/angular.min.js"></script>
+    <script type="text/javascript" src="bower_components/quill/dist/quill.min.js"></script>
+    <script type="text/javascript" src="bower_components/ngquill/src/ng-quill.min.js"></script>
+    <script src='bower_components/textAngular/dist/textAngular-rangy.min.js'></script>
+	<script src='bower_components/textAngular/dist/textAngular-sanitize.min.js'></script>
+	<script src='bower_components/textAngular/dist/textAngular.min.js'></script>
+	<script src="bower_components/js-beautify/js/lib/beautify.js"></script>
+    <script src="bower_components/js-beautify/js/lib/beautify-html.js"></script>
 
+
+    <style>
+    #formHTML .guiderInput{
+    	display: none;
+    }
+
+    .shepherd-text span.variableDisp{
+    	display: none;
+    }
+
+    textarea {
+		height:175px;
+		width:900px;
+		border:#999 1px solid;
+		font-family:"Lucida Sans Unicode", "Lucida Grande", sans-serif;
+		white-space: pre-wrap;
+	}
+
+	textarea:focus{
+		color:#000;
+		outline:none;
+		border:#35a5e5 1px solid;
+	}
+    </style>
+
+    <script>
+	tour = new Shepherd.Tour({
+	  defaults: {
+	    classes: 'shepherd-theme-arrows',
+	    scrollTo: true
+	  }
+	});
+    </script>
 </head>
 
-<body ng-app>
-    <div class="container">
-        <div id="leftPanel">
-            <div class="box">
-                <div class="boxTitle">
-                    Section Generator
-                </div>
-                <div class="boxContents">
-                    <form>
-                        <input type="text" placeholder="Section Name">
-                        <hr>
-                        <input type="radio" name="sectionType" value="singular">Singular<br>
-                        <input type="radio" name="sectionType" value="multiple">Multiple<br>
-                        <hr>
-                        <button>Add Section</button>
-                    </form>
-                </div>
-            </div>
-        </div>
-        <div id="contentPanel">
-            <div class="stampDiv">
-                <img class="stampImage" src="images/stamp.jpg">
-            </div>
+<body ng-app="myapp">
+<div class="container" style="margin-left: 125px;">
+	<div ng-controller="MainController">
+	    <h2>Template Button</h2>
 
-            <form id="form1" runat="server">
-                <div id="content">
+	    <text-angular ng-model="html1"></text-angular>
 
-                    <div class="dropitems sectionLayout">
-                        <textarea id="TextArea1" name="S1" rows="20">Your content goes here...</textarea>
-                    </div>
-                    <div class="dropitems">
-                        <div id="generatedForm"></div>
-                    </div>
-                    <div class="dropitems">
-                        <div id="generatedHTML"></div>
-                    </div>
-                </div>
-            </form>
-        </div>
-        <div id="rightPanel">
-            <div class="box">
-                <div class="boxTitle">
-                    Variable Generator
-                </div>
-                <div class="boxContents">
-                    Variable Generated
-                    <hr>
+	    <!--ng-quill-editor ng-model="html1" toolbar="true" link-tooltip="true" image-tooltip="true" toolbar-entries="font size bold list bullet italic underline strike align color background link image" editor-required="true" required="" error-class="input-error"></ng-quill-editor-->
 
-                    <form>
-                        <input type="text" placeholder="VariableName" id="variableName">
+	    <h3>Edit HTML</h3>
+	    <textarea assign-data="html1" ng-trim="false" style="white-space: pre-wrap;word-wrap: break-word"></textarea>
 
-                        <button id="createVariable">Generate Variable</button>
-                    </form>
-                    <div class="generatedVariables dragitems">
-                        <hr>
+	    <h2>Live Preview</h2><button onclick="tour.start()">Tour</button>
+	    <div id="formHTML" compile-html="html1"></div>
 
-                        <hr>
+	    <div id="testDiv"></div>
+	</div>
 
-                        <h3>
-			                <span>Variable area</span></h3>
-                        <div id="allfields" runat="server">
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <script type="text/javascript" src="js/script.js"></script>
+</div>
+
+
+
+
+
+<script>
+angular.module("myapp", ['ngQuill', 'textAngular'])
+	.service('dataService', function(){
+		this.users = [];
+		this.name = "s";
+		window.dataService = this;
+	})
+    .controller("MainController", function($scope, $interpolate, $sce, $interval, dataService) {
+        $scope.helloTo = {};
+        $scope.helloTo.title = "World, AngularJS";
+        $scope.html1 = "";
+        $scope.html2 = "";
+        $scope.html3 = "";
+        window.scope = $scope;
+        $scope.dataService = dataService;
+
+        $scope.parseVariables = function(html) {
+        	var re = /\{\{(\w+)\}\}/g;
+        	var res = html.match(re);
+        	for(var i in res)
+        		res[i] = res[i].replace(/[\{\}]/g,'')
+        	return res;
+        }
+
+        $scope.generateForm = function(variables) {
+        	var html = "";
+        	
+        	for(var i in variables){
+        		html += '<label>' + variables[i] + ':</label>'
+                html += '<input type="text" ng-model="' + variables[i] + '">';
+        	}
+        	//console.log(html);
+        	return html;
+        }
+
+        $scope.decodeHtml = function (html) {
+		    var txt = document.createElement("textarea");
+		    txt.innerHTML = html;
+		    return txt.value;
+		}
+
+        $scope.$watch('html1', function() {
+        	//console.log($scope.variables)
+        	var variables = $scope.parseVariables($scope.html1);
+        });
+    } )
+	.directive('compileHtml',['$sce', '$parse', '$compile', function($sce, $parse, $compile){
+	  return {
+	    link: function(scope,element,attr){
+	      var parsed = $parse(attr.compileHtml);
+	      function getStringValue() { return (parsed(scope) || '').toString(); }            
+	      scope.$watch(getStringValue, function (value) {
+	      	console.log(value);
+	      	var $el = $("<div></div>");
+	      	// Strip non form tags and compile
+	      	$el.html(value);
+	      	$compile($el.contents())(scope);
+	        element.html($el);
+	        //var el = $compile($sce.getTrustedHtml(parsed(scope)) || '')(scope);
+	        //element.empty();
+	        //element.append(el);        
+	      });       
+	    } 
+	  };
+	}])
+	.directive('guider',['$sce', '$parse', '$compile', '$timeout', function($sce, $parse, $compile, $timeout){
+	  return {
+	  	restrict: 'E',
+	  	scope: true,
+	    link: function(scope, element, attr) {
+	      debugger;
+	      var $el = $("<form></form>");
+	      // Strip non form tags and compile
+	      $el.append(element.find(".guiderInput"));
+	      $compile($el.contents())(scope);
+	      //console.log(html);
+	      $timeout(function(){
+	      	tour.addStep('myStep', {
+			  title: attr.description,
+			  scrollTo: true,
+			  text: $el[0],
+			  attachTo: {element: element[0], on: 'right'},
+			  classes: 'shepherd shepherd-open shepherd-theme-arrows shepherd-transparent-text',
+			  buttons: [
+			  	{
+			  		text: 'Back',
+			  		classes: 'shepherd-button-example-primary',
+			  		action: function() {
+			  			return tour.back();
+			  		}
+			  	},
+			    {
+			      text: 'Next',
+			      classes: 'shepherd-button-example-primary',
+			      action: function() {
+			        return tour.next();
+			      }
+			    }
+			  ]
+			});
+	      }, 0)
+	      
+	    } 
+	  };
+	}])
+	.directive('variable',['$compile', 'dataService', function($compile, dataService){
+	  return {
+	  	restrict: 'E',
+	  	replace: true,
+	  	scope: true,
+	  	template: function(element, attr){
+	  		//debugger;
+	  		debugger;
+	  		//console.log(!element.parent().parent().length)
+	  		//if(!element.parent().parent().length)
+	  		//	return element[0].outerHTML;
+	  		//else
+	  			return '<span><span class="guiderInput"><label for="' + attr.name +'">' + attr.question + '</label><input type="text" name="' + attr.name +'" ng-model="dataService.' + attr.name +'"/></span>' + '<span class="variableDisp" ng-bind="dataService.' + attr.name +'"></span></span>';
+	  	},
+	  	link: function(scope, element, attr){
+	      console.log('i am alive!', dataService)
+	      //$compile(element)(scope)
+	      //alert('i am alive')
+	      //	debugger;     
+	    } 
+	  };
+	}])
+	.directive('assignData',['$parse', function($parse){
+	  return {
+	  	scope: false,
+	    link: function(scope, element, attr){
+	      var parsed = $parse(attr.assignData);
+
+	      element.bind('change', function(){
+	      	tour.steps = [];
+
+	      	var pretty = html_beautify(value);
+	        element.val(pretty);  
+
+	      	scope.$apply(function(){
+	      		scope[attr.assignData] = element.val();
+	      	});
+	      })
+
+	      function getStringValue() { return (parsed(scope) || '').toString(); }            
+	      scope.$watch(getStringValue, function (value) {
+	        var data = html_beautify(value);
+	        element.val(data);      
+	      });       
+	    } 
+	  };
+	}]);
+</script>
+
+<script>
+	$(function(){
+		// tour.on('show', function(a,b,c){
+		// 	debugger;
+		// })
+		tour.start();
+	});
+</script
+
 </body>
-
 </html>
