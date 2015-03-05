@@ -21,9 +21,14 @@
     <script src="bower_components/js-beautify/js/lib/beautify-html.js"></script>
     <script src="bower_components/jspdf/dist/jspdf.debug.js"></script>
     <script src="bower_components/html2canvas/build/html2canvas.min.js"></script>
+    <script src="bower_components/angular-route/angular-route.min.js"></script>
 
 
     <style>
+    /*canvas{
+    	display: none;
+    }
+*/
     #formHTML .guiderInput{
     	display: none;
     }
@@ -59,21 +64,7 @@
 
 <body ng-app="myapp">
 <div class="container" style="margin-left: 125px;">
-	<div ng-controller="MainController">
-	    <h2>Template Button</h2>
-
-	    <h3>Step 1: Generate template in gui</h3>
-	    <text-angular ng-model="dataService.html"></text-angular>
-
-	    <h3>Step 2: Add Guider and Variable Tags</h3>
-	    <textarea assign-data="dataService.html" ng-trim="false" style="white-space: pre-wrap;word-wrap: break-word"></textarea>
-
-	    <h2>Live Preview</h2><button onclick="tour.start()">Tour</button>
-	    <div id="formHTML" compile-html="dataService.html"></div>
-
-	    <div id="testDiv"></div>
-	</div>
-
+	<div ng-view></div>
 </div>
 
 
@@ -81,14 +72,65 @@
 
 
 <script>
-angular.module("myapp", ['ngQuill', 'textAngular'])
+angular.module("myapp", ['ngQuill', 'textAngular', 'ngRoute'])
+	.config(['$routeProvider',
+	  function($routeProvider) {
+	    $routeProvider.
+	      when('/', {
+	        templateUrl: 'templates/main.html',
+	        controller: 'MainController'
+	      }).
+	      when('/customer', {
+	      	templateUrl: 'templates/customer.html',
+	      	controller: 'CustomerController',
+	      }).
+	      when('/download', {
+	      	templateUrl: 'templates/download.html',
+	      	controller: 'DownloadController'
+	      });
+	  }])
+	.run( function($rootScope, $location) {
+	   $rootScope.$watch(function() { 
+	      return $location.path(); 
+	    },
+	    function(a){  
+	      tour.steps = [];
+	    });
+	})
 	.service('dataService', function(){
 		html = "";
-		window.dataService = this;
+		//window.dataService = this;
 	})
-    .controller("MainController", function($scope, $interpolate, $sce, $interval, dataService) {
+    .controller("MainController", function($scope, dataService) {
         $scope.dataService = dataService;
-    } )
+    })
+    .controller("CustomerController", function($scope, $timeout, dataService){
+    	$scope.dataService = dataService;
+    	
+    	$timeout(function(){
+    		tour.start();
+    	} ,1000)
+    })
+    .controller("DownloadController", function($scope, dataService){
+    	$scope.dataService = dataService;
+    })
+	.directive('downloadPdf',['$sce', '$parse', '$compile', function($sce, $parse, $compile){
+	  return {
+	  	link: function(scope,element,attr){
+	      html2canvas(document.body, {
+				onrendered: function(canvas) {
+					document.body.appendChild(canvas);
+
+					var pdf = new jsPDF('p','pt','a4');
+
+					pdf.addHTML($("canvas")[0],function() {
+					    pdf.output('datauri');
+					});
+				}
+		  });     
+	    } 
+	  };
+	}])
 	.directive('compileHtml',['$sce', '$parse', '$compile', function($sce, $parse, $compile){
 	  return {
 	    link: function(scope,element,attr){
